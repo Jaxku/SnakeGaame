@@ -20,6 +20,9 @@ score_font = pygame.font.SysFont("arialblack", 25)
 exit_font = pygame.font.Font("freesansbold.ttf", 30)
 msg_font = pygame.font.SysFont("arialblack", 20)
 
+clock = pygame.time.Clock()  # control the frame rate of the game,
+# which will be used to control the speed of the snake
+
 
 # Function to display message on screen
 def message(msg, txt_colour, bkgd_colour):
@@ -30,70 +33,86 @@ def message(msg, txt_colour, bkgd_colour):
     screen.blit(txt, text_box)
 
 
-clock = pygame.time.Clock()  # control the frame rate of the game,
-# which will be used to control the speed of the snake
+# function to run the main game loop
+def game_loop():
+    quit_game = False
+    game_over = False
 
-quit_game = False
+    # snake will be 20x20 pixels
+    snake_x = 490   # Centre point horizontally is (1000-20)/2 = 490
+    snake_y = 350   # Centre point vertically is (720-2)/2 = 350
 
-# snake will be 20x20 pixels
-snake_x = 490   # Centre point horizontally is (1000-20)/2 = 490
-snake_y = 350   # Centre point vertically is (720-2)/2 = 350
+    snake_x_change = 0  # holds the value of changes in the x-coordinate
+    snake_y_change = 0  # holds the value of changes in the y-coordinate
 
-snake_x_change = 0  # holds the value of changes in the x-coordinate
-snake_y_change = 0  # holds the value of changes in the y-coordinate
+    # Setting a random position for the food - start
+    food_x = round(random.randrange(0, 1000 - 20) / 20) * 20
+    food_y = round(random.randrange(0, 720 - 20) / 20) * 20
 
-# Setting a random position for the food - start
-food_x = round(random.randrange(0, 1000 - 20) / 20) * 20
-food_y = round(random.randrange(0, 720 - 20) / 20) * 20
+    while not quit_game:
+        # gives user the option to quit or play again when they die
+        while game_over:
+            screen.fill(white)
+            message("You Died! Game Over, "
+                    "Press 'Q' or Quit or 'A' to play again"
+                    , black, white)
+            pygame.display.update()
 
+            # Check if user wants to quit or play again
+            for even in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        quit_game = True
+                        game_over = False
+                    if event.key == pygame.K_a:
+                        game_loop()  # restart the main game loop
 
-while not quit_game:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            quit_game = True
+        # Original set-up for arrow keys to move the snake
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit_game = True
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                snake_x_change = -20
-                snake_y_change = 0
-            elif event.key == pygame.K_RIGHT:
-                snake_x_change = 20
-                snake_y_change = 0
-            elif event.key == pygame.K_UP:
-                snake_y_change = 0
-                snake_x_change = -20
-            elif event.key == pygame.K_DOWN:
-                snake_y_change = 0
-                snake_x_change = 20
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    snake_x_change = -20
+                    snake_y_change = 0
+                elif event.key == pygame.K_RIGHT:
+                    snake_x_change = 20
+                    snake_y_change = 0
+                elif event.key == pygame.K_UP:
+                    snake_y_change = 0
+                    snake_x_change = -20
+                elif event.key == pygame.K_DOWN:
+                    snake_y_change = 0
+                    snake_x_change = 20
 
-    if snake_x >= 1000 or snake_x < 0 or snake_y >= 720 or snake_y < 0:
-        quit_game = True
+        if snake_x >= 1000 or snake_x < 0 or snake_y >= 720 or snake_y < 0:
+            game_over = True
 
-    snake_x += snake_x_change
-    snake_y += snake_y_change
+        snake_x += snake_x_change
+        snake_y += snake_y_change
 
-    screen.fill(green)  # changes screen (surface) from the default black to green
+        screen.fill(green)  # changes screen (surface) from the default black to green
 
-    # create rectangle for snake
-    pygame.draw.rect(screen, red, [snake_x, snake_y, 20, 20])
-    pygame.display.update()
+        # create rectangle for snake
+        pygame.draw.rect(screen, red, [snake_x, snake_y, 20, 20])
+        pygame.display.update()
 
-    # create circle for food
-    pygame.draw.circle(screen, yellow, [food_x, food_y], 10)
-    pygame.display.update()
+        # create circle for food
+        pygame.draw.circle(screen, yellow, [food_x, food_y], 10)
+        pygame.display.update()
 
-    # Collison detection (test if snake touches food)
-    if snake_x == food_x and snake_y == food_y - 10:
-        # Set new random position for food in snake touches it
-        food_x = round(random.randrange(20, 1000 - 20) / 20) * 20
-        food_y = round(random.randrange(20, 720 - 20) / 20) * 20 PAGE 23 PAGE 23 PAGE 23 PAGE 23
+        # Collison detection (test if snake touches food)
+        if snake_x == food_x and snake_y == food_y - 10:
+            # Set new random position for food in snake touches it
+            food_x = round(random.randrange(20, 1000 - 20) / 20) * 20
+            food_y = round(random.randrange(20, 720 - 20) / 20) * 20
 
-    clock.tick(5)  # 5 frames per second
+        clock.tick(5)  # 5 frames per second
 
-
-message("You Died! Game Over", red, white)
-pygame.display.update()
-time.sleep(3)
 
 pygame.quit()
 quit()
+
+# Main routine
+game_loop()
