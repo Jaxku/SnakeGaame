@@ -23,6 +23,8 @@ msg_font = pygame.font.SysFont("arialblack", 20)
 clock = pygame.time.Clock()  # control the frame rate of the game,
 # which will be used to control the speed of the snake
 
+# create snake - replaces the previous snake drawing the section in main loop
+def draw_snake(snake_list)
 
 # Function to display message on screen
 def message(msg, txt_colour, bkgd_colour):
@@ -67,11 +69,36 @@ def game_loop():
                     if event.key == pygame.K_a:
                         game_loop()  # restart the main game loop
 
-        # Original set-up for arrow keys to move the snake
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                quit_game = True
+                instructions = "Exit: X to Quit, SPACE to resume, R to reset"
+                message(instructions, white, black)
+                pygame.display.update()
 
+                end = False
+                while not end:
+                    for event in pygame.event.get():
+                        # if user presses x button, game quits.
+                        if event.type == pygame.QUIT:
+                            end = True
+                            quit_game = True
+
+                    # if user presses 'R' button again, game is reset
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_r:
+                            end = True, game_loop()
+
+                        # if user presses space, game resumes
+                    if event.key == pygame.K_SPACE:
+                        end = True
+
+                        # If user presses 'Q' button, game quits
+                    if event.key == pygame.K_q:
+                        quit_game = True
+                        end = True
+
+            # Original set-up for arrow keys to move the snake
+            # Handling snake movement
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     snake_x_change = -20
