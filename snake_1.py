@@ -23,8 +23,13 @@ msg_font = pygame.font.SysFont("arialblack", 20)
 clock = pygame.time.Clock()  # control the frame rate of the game,
 # which will be used to control the speed of the snake
 
+
 # create snake - replaces the previous snake drawing the section in main loop
-def draw_snake(snake_list)
+def draw_snake(snake_list):
+    print(f"Snake list: {snake_list}") # for debugging
+    for i in snake_list:
+        pygame.draw.rect(screen, red, [i[0], i[1], 20, 20])
+
 
 # Function to display message on screen
 def message(msg, txt_colour, bkgd_colour):
@@ -46,6 +51,8 @@ def game_loop():
 
     snake_x_change = 0  # holds the value of changes in the x-coordinate
     snake_y_change = 0  # holds the value of changes in the y-coordinate
+    snake_list = []
+    snake_length = 1
 
     # Setting a random position for the food - start
     food_x = round(random.randrange(0, 1000 - 20) / 20) * 20
@@ -81,7 +88,7 @@ def game_loop():
                         # if user presses x button, game quits.
                         if event.type == pygame.QUIT:
                             end = True
-                            quit_game = True
+                            game_over = True
 
                     # if user presses 'R' button again, game is reset
                     if event.type == pygame.KEYDOWN:
@@ -122,18 +129,39 @@ def game_loop():
         screen.fill(green)  # changes screen (surface) from the default black to green
 
         # create rectangle for snake
-        pygame.draw.rect(screen, red, [snake_x, snake_y, 20, 20])
-        pygame.display.update()
+        snake_head = [snake_x, snake_y]
+        snake_list.append(snake_head)
+        if len(snake_list) > snake_length:
+            del snake_list[0]
+
+        for x in snake_list[:-1]:
+            if x == snake_head:
+                game_over = True
+
+        draw_snake(snake_list)
+
 
         # create circle for food
-        pygame.draw.circle(screen, yellow, [food_x, food_y], 10)
+        food = pygame.Rect(food_x, food_y, 20, 20)
+        apple - pygame.image.load('')
         pygame.display.update()
+
+        # Collison detection (test if snake touches food)
+        # print lines are for debugging
+        print(f"Snake x: {snake_x}")
+        print(f"Food x: {food_x}")
+        print(f"Snake y: {snake_y}")
+        print(f"Food y: {food_y}")
+        print("\n\n")
 
         # Collison detection (test if snake touches food)
         if snake_x == food_x and snake_y == food_y - 10:
             # Set new random position for food in snake touches it
             food_x = round(random.randrange(20, 1000 - 20) / 20) * 20
             food_y = round(random.randrange(20, 720 - 20) / 20) * 20
+
+            # Increase length of snake (by original size)
+            snake_length += 1
 
         clock.tick(5)  # 5 frames per second
 
