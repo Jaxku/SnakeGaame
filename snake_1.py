@@ -140,10 +140,12 @@ def game_loop():
 
         draw_snake(snake_list)
 
-
         # create circle for food
         food = pygame.Rect(food_x, food_y, 20, 20)
-        apple - pygame.image.load('')
+        apple = pygame.image.load('fruit.png').convert_alpha()
+        resized_apple = pygame.transform.smoothscale(apple, [20, 20])
+        screen.blit(resized_apple, food)
+
         pygame.display.update()
 
         # Collison detection (test if snake touches food)
@@ -155,10 +157,12 @@ def game_loop():
         print("\n\n")
 
         # Collison detection (test if snake touches food)
-        if snake_x == food_x and snake_y == food_y - 10:
+        if snake_x == food_x and snake_y == food_y:
             # Set new random position for food in snake touches it
             food_x = round(random.randrange(20, 1000 - 20) / 20) * 20
             food_y = round(random.randrange(20, 720 - 20) / 20) * 20
+            # for testing purposes
+            print("got it")
 
             # Increase length of snake (by original size)
             snake_length += 1
