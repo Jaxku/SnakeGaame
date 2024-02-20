@@ -23,6 +23,11 @@ msg_font = pygame.font.SysFont("arialblack", 20)
 clock = pygame.time.Clock()  # control the frame rate of the game,
 # which will be used to control the speed of the snake
 
+# Display palyer score throughout the game
+def player_score(score, score_colour):
+    display_score = score_font.render(f"Score: {score}", True, score_colour)
+    screen.blit(display_score, (800, 20))  # Coordinates for top right PA
+     GE 36 PAGE 36 PAGE 36 PAGE 36
 
 # create snake - replaces the previous snake drawing the section in main loop
 def draw_snake(snake_list):
@@ -46,7 +51,7 @@ def game_loop():
     game_over = False
 
     # snake will be 20x20 pixels
-    snake_x = 490   # Centre point horizontally is (1000-20)/2 = 490
+    snake_x = 480   # Centre point horizontally is (1000-20)-20 = 480
     snake_y = 350   # Centre point vertically is (720-2)/2 = 350
 
     snake_x_change = 0  # holds the value of changes in the x-coordinate
@@ -140,6 +145,10 @@ def game_loop():
 
         draw_snake(snake_list)
 
+        # Keeping track of the player's score
+        score = snake_length - 1
+        player_score(score, black)
+
         # create circle for food
         food = pygame.Rect(food_x, food_y, 20, 20)
         apple = pygame.image.load('fruit.png').convert_alpha()
@@ -170,8 +179,7 @@ def game_loop():
         clock.tick(5)  # 5 frames per second
 
 
-pygame.quit()
-quit()
+
 
 # Main routine
 game_loop()
