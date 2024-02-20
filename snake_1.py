@@ -16,18 +16,19 @@ green = (0, 155, 0)
 yellow = (255, 255, 0)
 
 # Fonts for the game
-score_font = pygame.font.SysFont("arialblack", 25)
+score_font = pygame.font.SysFont("snake chan.ttf", 25)
 exit_font = pygame.font.Font("freesansbold.ttf", 30)
 msg_font = pygame.font.SysFont("arialblack", 20)
 
 clock = pygame.time.Clock()  # control the frame rate of the game,
 # which will be used to control the speed of the snake
 
-# Display palyer score throughout the game
+
+# Display player score throughout the game
 def player_score(score, score_colour):
     display_score = score_font.render(f"Score: {score}", True, score_colour)
-    screen.blit(display_score, (800, 20))  # Coordinates for top right PA
-     GE 36 PAGE 36 PAGE 36 PAGE 36
+    screen.blit(display_score, (800, 20))  # Coordinates for top right
+
 
 # create snake - replaces the previous snake drawing the section in main loop
 def draw_snake(snake_list):
@@ -73,7 +74,7 @@ def game_loop():
             pygame.display.update()
 
             # Check if user wants to quit or play again
-            for even in pygame.event.get():
+            for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
                         quit_game = True
@@ -119,11 +120,11 @@ def game_loop():
                     snake_x_change = 20
                     snake_y_change = 0
                 elif event.key == pygame.K_UP:
-                    snake_y_change = 0
-                    snake_x_change = -20
+                    snake_x_change = 0
+                    snake_y_change = -20
                 elif event.key == pygame.K_DOWN:
-                    snake_y_change = 0
-                    snake_x_change = 20
+                    snake_x_change = 0
+                    snake_y_change = 20
 
         if snake_x >= 1000 or snake_x < 0 or snake_y >= 720 or snake_y < 0:
             game_over = True
@@ -148,6 +149,12 @@ def game_loop():
         # Keeping track of the player's score
         score = snake_length - 1
         player_score(score, black)
+
+        # Link speed of snake to player score to increase difficulty
+        if score > 3:
+            speed = score
+        else:
+            speed = 3
 
         # create circle for food
         food = pygame.Rect(food_x, food_y, 20, 20)
@@ -176,9 +183,11 @@ def game_loop():
             # Increase length of snake (by original size)
             snake_length += 1
 
-        clock.tick(5)  # 5 frames per second
+        clock.tick(speed)  # 5 frames per second
 
 
+    pygame.quit()
+    quit()
 
 
 # Main routine
