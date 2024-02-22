@@ -24,10 +24,44 @@ clock = pygame.time.Clock()  # control the frame rate of the game,
 # which will be used to control the speed of the snake
 
 
+# Function to keep track of the highest score-- writes value to a local file
+def load_high_score():
+    try:
+        hi_score_file = open("HI_score.txt", 'r')
+    except IOError:
+        hi_score_file = open ("HI_score.txt", 'w')
+        hi_score_file.write("0")
+    hi_score_file = open("HI_score.txt", 'r')
+    value = hi_score_file.read()
+    hi_score_file.close()
+    return value
+
+
+# FUnction to update record of the highest score
+def update_high_score(score, high_score):
+    if int(score) > int(high_score):
+        if int(score) > int(high_score):
+            return score
+        else:
+            return high_score
+
+
+# save updated high score if player beats it
+def save_high_score(high_score):
+    high_score_file = open("HI_score.txt", 'w')
+    high_score_file.write(str(high_score))
+    high_score_file.close()
+
+
 # Display player score throughout the game
-def player_score(score, score_colour):
+def player_score(score, score_colour, hi_score):
     display_score = score_font.render(f"Score: {score}", True, score_colour)
     screen.blit(display_score, (800, 20))  # Coordinates for top right
+
+    # High_score
+    display_score = score_font.render(f"High Score: {hi_score}", True,
+                                      score_colour)
+    screen.blit(display_score, (10, 10)) # Coordinates for top left
 
 
 # create snake - replaces the previous snake drawing the section in main loop
@@ -48,6 +82,7 @@ def message(msg, txt_colour, bkgd_colour):
 
 # function to run the main game loop
 def game_loop():
+    start_time = time.time()
     quit_game = False
     game_over = False
 
@@ -64,9 +99,14 @@ def game_loop():
     food_x = round(random.randrange(0, 1000 - 20) / 20) * 20
     food_y = round(random.randrange(0, 720 - 20) / 20) * 20
 
+    # Load the high score
+    high_score = int(load_high_score())
+    print(f"high_score test: {high_score}")  # for debugging
+
     while not quit_game:
         # gives user the option to quit or play again when they die
         while game_over:
+            save_high_score(high_score)
             screen.fill(white)
             message("You Died! Game Over, "
                     "Press 'Q' or Quit or 'A' to play again"
@@ -149,6 +189,9 @@ def game_loop():
         # Keeping track of the player's score
         score = snake_length - 1
         player_score(score, black)
+
+        #  Get high score
+        high_score = update_high_score(score, high_score)
 
         # Link speed of snake to player score to increase difficulty
         if score > 3:
