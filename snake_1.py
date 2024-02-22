@@ -29,7 +29,7 @@ def load_high_score():
     try:
         hi_score_file = open("HI_score.txt", 'r')
     except IOError:
-        hi_score_file = open ("HI_score.txt", 'w')
+        hi_score_file = open("HI_score.txt", 'w')
         hi_score_file.write("0")
     hi_score_file = open("HI_score.txt", 'r')
     value = hi_score_file.read()
@@ -40,10 +40,9 @@ def load_high_score():
 # FUnction to update record of the highest score
 def update_high_score(score, high_score):
     if int(score) > int(high_score):
-        if int(score) > int(high_score):
-            return score
-        else:
-            return high_score
+        return score
+    else:
+        return high_score
 
 
 # save updated high score if player beats it
@@ -61,12 +60,12 @@ def player_score(score, score_colour, hi_score):
     # High_score
     display_score = score_font.render(f"High Score: {hi_score}", True,
                                       score_colour)
-    screen.blit(display_score, (10, 10)) # Coordinates for top left
+    screen.blit(display_score, (10, 10))  # Coordinates for top left
 
 
 # create snake - replaces the previous snake drawing the section in main loop
 def draw_snake(snake_list):
-    print(f"Snake list: {snake_list}") # for debugging
+    print(f"Snake list: {snake_list}")  # for debugging
     for i in snake_list:
         pygame.draw.rect(screen, red, [i[0], i[1], 20, 20])
 
@@ -88,7 +87,7 @@ def game_loop():
 
     # snake will be 20x20 pixels
     snake_x = 480   # Centre point horizontally is (1000-20)-20 = 480
-    snake_y = 350   # Centre point vertically is (720-2)/2 = 350
+    snake_y = 340   # Centre point vertically is (720-2)/2 = 350                # changed coordinate
 
     snake_x_change = 0  # holds the value of changes in the x-coordinate
     snake_y_change = 0  # holds the value of changes in the y-coordinate
@@ -96,11 +95,11 @@ def game_loop():
     snake_length = 1
 
     # Setting a random position for the food - start
-    food_x = round(random.randrange(0, 1000 - 20) / 20) * 20
-    food_y = round(random.randrange(0, 720 - 20) / 20) * 20
+    food_x = round(random.randrange(20, 1000 - 20) / 20) * 20               # changed coordinate
+    food_y = round(random.randrange(20, 720 - 20) / 20) * 20                # changed coordinate
 
     # Load the high score
-    high_score = int(load_high_score())
+    high_score = load_high_score()
     print(f"high_score test: {high_score}")  # for debugging
 
     while not quit_game:
@@ -109,8 +108,7 @@ def game_loop():
             save_high_score(high_score)
             screen.fill(white)
             message("You Died! Game Over, "
-                    "Press 'Q' or Quit or 'A' to play again"
-                    , black, white)
+                    "Press 'Q' or Quit or 'A' to play again", black, white)
             pygame.display.update()
 
             # Check if user wants to quit or play again
@@ -188,7 +186,7 @@ def game_loop():
 
         # Keeping track of the player's score
         score = snake_length - 1
-        player_score(score, black)
+        player_score(score, black, high_score)
 
         #  Get high score
         high_score = update_high_score(score, high_score)
@@ -227,7 +225,6 @@ def game_loop():
             snake_length += 1
 
         clock.tick(speed)  # 5 frames per second
-
 
     pygame.quit()
     quit()
